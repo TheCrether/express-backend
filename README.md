@@ -8,6 +8,7 @@
   - [Todolist](#todolist)
   - [Usage of the API](#usage-of-the-api)
     - [Getting my Github repositories](#getting-my-github-repositories)
+    - [Sending Contact Info/Message](#sending-contact-infomessage)
     - [Getting info on a user with a specific id](#getting-info-on-a-user-with-a-specific-id)
     - [Add an user](#add-an-user)
     - [Changing an specific user](#changing-an-specific-user)
@@ -58,6 +59,22 @@ I wanted something to communicate with my web projects like displaying the githu
   }
 ]
 ```
+
+---
+
+### Sending Contact Info/Message
+
+**Definition**
+`POST /api/contact`
+**Arguments**
+
+- `"name":string` Name of the Person which is sending the message
+- `"email":string` Email so I can respond
+- `"message":string` The message you want to send me
+**Response**
+
+- `204 No Content` on success
+- `400 Bad Request` if the request has not got one of the above specified arguments
 
 ---
 

@@ -73,6 +73,10 @@ app.route('/api/github').get((req, res) => {
 });
 
 // TODO implement everything here
+app.route("/api/contact").post((req, res) => {
+
+});
+
 app.route("/api/users/:username").get((req, res) => {
 
 });
