@@ -9,31 +9,21 @@
   - [Usage of the API](#usage-of-the-api)
     - [Getting my Github repositories](#getting-my-github-repositories)
     - [Sending Contact Info/Message](#sending-contact-infomessage)
-    - [Getting info on a user with a specific id](#getting-info-on-a-user-with-a-specific-id)
-    - [Add an user](#add-an-user)
-    - [Changing an specific user](#changing-an-specific-user)
-    - [Removing an specific user](#removing-an-specific-user)
-    - [Getting the structograms for a specific userid](#getting-the-structograms-for-a-specific-userid)
     - [Saving a new structogram](#saving-a-new-structogram)
-    - [Changing a structogram](#changing-a-structogram)
-    - [Delete a structogram](#delete-a-structogram)
-
----
+    - [Get a structogram](#get-a-structogram)
 
 ## Why I made this
 
 I wanted something to communicate with my web projects like displaying the github repositories on my [Projects site][1].
-
----
 
 ## Todolist
 
 - [ ] Finish README
 - [ ] Make all routes function
 
----
-
 ## Usage of the API
+
+**Info:** If there is an server error the server will return `500 Internal Server Error` or `503 Service Unavailable` if the route is not implemented but will be
 
 ### Getting my Github repositories
 
@@ -60,8 +50,6 @@ I wanted something to communicate with my web projects like displaying the githu
 ]
 ```
 
----
-
 ### Sending Contact Info/Message
 
 **Definition**
@@ -71,155 +59,47 @@ I wanted something to communicate with my web projects like displaying the githu
 - `"name":string` Name of the Person which is sending the message
 - `"email":string` Email so I can respond
 - `"message":string` The message you want to send me
+
 **Response**
 
 - `204 No Content` on success
 - `400 Bad Request` if the request has not got one of the above specified arguments
 
----
+### Saving a new structogram
 
-### Getting info on a user with a specific id
+`POST /api/structograms`
+**Arguments**
 
-**Definition**
-`GET /api/users/<username>`
+- `"name":string` the name of the structogram
+- `"content":string` the content of the structogram
+
 **Response**
 
-- `200 OK` on success and returns data about the user
-- `404 Not Found` if there is no user with such a id
+- `200 OK` on success and give back the structogram id
+- `400 Bad Request` if the request is bad
 
 ```json
 
 {
-  "id": 1,
-  "name": "TheCrether",
-  "structograms": [
-    {
-      "owner": 1,
-      "allowedEditors": [
-        1
-      ],
-      "id": 0,
-      "content": "(a)variable=2"
-    },
-    {
-      "allowedEditors": [
-        1
-      ],
-      "id": 1,
-      "content": "for(i = 0; i<10;i++) {\n(a)variable=i\n}"
-    }
-  ]
+  "id": 1
 }
 ```
 
----
+### Get a structogram
 
-### Add an user
-
-**Definition**
-`POST /api/users`
-**Arguments**
-
-- `"name":string` the name you want to have for the new user, must be unique
+`GET /api/structograms/<id>`
 **Response**
 
-- `204 No Content` on success
-- `409 Conflict` if the user is already exists
-
----
-
-### Changing an specific user
-
-**Definition**
-`PUT /api/users/<username>`
-**Arguments**
-
-- `"name":string` the name you want to change to
-**Response**
-- `204 No Content` on success
-
----
-
-### Removing an specific user
-
-**Definition**
-`DELETE /api/users/<username>`
-**Arguments**
-
-- `"username":string` the username which is requesting
-**Response**
-
-- `204 No Content` on success
-- `403 Forbidden` if you are not the user
-
----
-
-### Getting the structograms for a specific userid
-
-`GET /api/users/<username>/structograms`
-**Response**
-
-- `200 OK` on success and returns the something like the JSON below
-- `204 No Content` if there are no structograms saved
-- `404 Not Found` if there is no user with that id
+- `200 OK` on sucesss
+- `404 Not Found` if there is no structogram with that id
 
 ```json
 
-[
-  {
-    "owner": 1,
-    "allowedEditors": [
-      1
-    ],
-    "id": 0,
-    "content": "(a)variable=2"
-  },
-  {
-    "owner": 1,
-    "allowedEditors": [
-      1
-    ],
-    "id": 1,
-    "content": "for(i = 0; i<10;i++) {\n(a)variable=i\n}"
-  }
-]
+{
+  "ID": 1,
+  "name": "1st",
+  "content": "(a)variable=2"
+}
 ```
-
----
-
-### Saving a new structogram
-`POST /api/users/<username>/structograms`
-**Arguments**
-
-- `"content":string` the content of the structogram
-**Response**
-
-- `204 No Content` on success after creation of the item
-- `404 Not Found` if there is no user with that id
-
----
-
-### Changing a structogram
-
-**Definition**
-`PUT /api/users/<userid>/structograms`
-**Arguments**
-
-- `"content":string` the new content of an specific structogram
-- `"id": number` the id of the structogram you want to edit
-**Response**
-
-- `204 No Content` on success
-- `403 Forbidden` if you are not an allowed editor of the structogram
-
----
-
-### Delete a structogram
-
-**Definition**
-`DELETE /api/users/<username>/structograms`
-**Arguments**
-
-- `"id":number` the id of the structogram you want to edit
 
 [1]: http://thecrether.net/projects
