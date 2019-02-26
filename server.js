@@ -15,18 +15,6 @@ app.use(bodyParser.urlencoded({
 
 // So that everything gets redirected to angular routes
 app.use('/', express.static(path.join(__dirname, 'public/')));
-app.get('/', (req, res) => {
-	res.sendFile(path.join(__dirname, 'public/index.html'));
-	//console.log(req.sessionID);
-});
-
-app.get("/projects", (req, res) => {
-	res.sendFile(path.join(__dirname, "public/index.html"));
-});
-
-app.get("/contact", (req, res) => {
-	res.sendFile(path.join(__dirname, "public/index.html"));
-});
 /*
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
@@ -115,13 +103,20 @@ app.route('/api/github').get((req, res) => {
 		if (err) {
 			console.error(err);
 			res.status(500).send();
+			return;
 		}
 		res.status(200).send(results);
 	});
 });
 
 app.get('/api/contact', (req, res) => {
-	const contact = JSON.parse(fs.readFileSync(`${__dirname}/contact.json`));
+	try {
+		const contact = JSON.parse(fs.readFileSync(`${__dirname}/contact.json`));
+	} catch (error) {
+		console.error(error);
+		res.status(500).send();
+		return;
+	}
 	res.status(200).send(contact);
 });
 
@@ -183,6 +178,10 @@ app.route('/api/structograms/:id').get((req, res) => {
 		}
 		res.status(200).send(result[0]);
 	});
+});
+
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
 app.listen(conf.port, () => {
