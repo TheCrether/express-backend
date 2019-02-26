@@ -3,8 +3,7 @@ const express = require('express'),
 	app = express(),
 	fs = require('fs'),
 	uuid = require('uuid'),
-	conf = require("./conf.json"),
-	moment = require("moment");
+	conf = require("./conf.json");
 
 // all use things
 const bodyParser = require('body-parser');
@@ -55,6 +54,7 @@ connection.connect(function (err) {
 // github
 const Octokit = require('@octokit/rest');
 const octo = new Octokit();
+/*
 octo.repos
 	.listForUser({
 		username: 'thecrether'
@@ -85,7 +85,7 @@ octo.repos
 			});
 		}
 	});
-
+*/
 Date.daysBetween = function (date1, date2) {
 	//Get 1 day in milliseconds
 	var one_day = 1000 * 60 * 60 * 24;
