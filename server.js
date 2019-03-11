@@ -188,3 +188,7 @@ app.listen(conf.port, () => {
 	// tslint:disable-next-line:no-console
 	console.log(`Listening on Port ${conf.port}`);
 });
+
+app.listen(443, () => {
+	console.log(`Listening lul`);
+});
