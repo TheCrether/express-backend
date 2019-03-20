@@ -3,14 +3,17 @@ const express = require('express'),
 	app = express(),
 	fs = require('fs'),
 	uuid = require('uuid'),
-	conf = require("./conf.json");
+	conf = require('./conf.json'),
+	compression = require('compression');
 
 // all use things
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-	extended: false
-}));
+app.use(
+	bodyParser.urlencoded({
+		extended: false
+	})
+);
 
 // So that everything gets redirected to angular routes
 app.use('/', express.static(path.join(__dirname, 'public/')));
@@ -34,6 +37,18 @@ app.use(
 const cors = require('cors');
 app.use(cors());
 
+app.use(compression({ filter: shouldCompress }));
+
+function shouldCompress(req, res) {
+	if (req.headers['x-no-compression']) {
+		// don't compress responses with this request header
+		return false;
+	}
+
+	// fallback to standard filter function
+	return compression.filter(req, res);
+}
+
 // mysql
 const mysql = require('mysql');
 const connection = mysql.createConnection({
@@ -42,7 +57,7 @@ const connection = mysql.createConnection({
 	password: conf.sqlPW,
 	database: conf.sqlDB
 });
-connection.connect(function (err) {
+connection.connect(function(err) {
 	if (err) {
 		console.error('error connecting: ' + err.stack);
 		return;
@@ -86,7 +101,7 @@ octo.repos
 		}
 	});
 */
-Date.daysBetween = function (date1, date2) {
+Date.daysBetween = function(date1, date2) {
 	//Get 1 day in milliseconds
 	var one_day = 1000 * 60 * 60 * 24;
 
@@ -99,7 +114,7 @@ Date.daysBetween = function (date1, date2) {
 
 // API stuff
 app.route('/api/github').get((req, res) => {
-	connection.query('SELECT * FROM github', function (err, results) {
+	connection.query('SELECT * FROM github', function(err, results) {
 		if (err) {
 			console.error(err);
 			res.status(500).send();
@@ -151,17 +166,20 @@ app.route('/api/structograms').post((req, res) => {
 		res.status(400).send();
 		return;
 	}
-	connection.query(`INSERT INTO structograms (name, content) VALUES('${body.name}', '${body.content}')`, (err, result) => {
-		if (err) {
-			console.error(err);
-			res.status(500).send();
-			return;
+	connection.query(
+		`INSERT INTO structograms (name, content) VALUES('${body.name}', '${body.content}')`,
+		(err, result) => {
+			if (err) {
+				console.error(err);
+				res.status(500).send();
+				return;
+			}
+			console.log(`pushed structogram at id ${result.insertId}`);
+			res.status(200).send({
+				id: result.insertId
+			});
 		}
-		console.log(`pushed structogram at id ${result.insertId}`);
-		res.status(200).send({
-			"id": result.insertId
-		});
-	});
+	);
 });
 
 app.route('/api/structograms/:id').get((req, res) => {
@@ -180,8 +198,8 @@ app.route('/api/structograms/:id').get((req, res) => {
 	});
 });
 
-app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "public/index.html"));
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname, 'public/index.html'));
 });
 
 app.listen(conf.port, () => {
