@@ -58,7 +58,7 @@ connection.connect(function(err) {
 // github
 const Octokit = require('@octokit/rest');
 const octo = new Octokit();
-/*
+
 octo.repos
 	.listForUser({
 		username: 'thecrether'
@@ -70,7 +70,7 @@ octo.repos
 			return;
 		}
 		conf.lastPushed = Date.now();
-		fs.writeFileSync("./conf.json", JSON.stringify(conf), "utf8");
+		fs.writeFileSync('./conf.json', JSON.stringify(conf), 'utf8');
 		connection.query('DELETE FROM github', (err, res) => {
 			if (err) throw err;
 			console.log('Deleting everything in Github table');
@@ -80,16 +80,14 @@ octo.repos
 				`INSERT INTO github (name, gitlink, description, url) VALUES (` +
 				`'${repo.name}', '${repo.html_url}', ` +
 				`'${repo.description == null ? '' : repo.description}', '
-				${repo.homepage == null ? ''
-					: repo.homepage}');`;
-			connection.query(sql, function (err, res) {
+				${repo.homepage == null ? '' : repo.homepage}');`;
+			connection.query(sql, function(err, res) {
 				if (err) throw err;
 
 				console.log(`pushed ${repo.name} to db`);
 			});
 		}
 	});
-*/
 Date.daysBetween = function(date1, date2) {
 	//Get 1 day in milliseconds
 	var one_day = 1000 * 60 * 60 * 24;
