@@ -46,7 +46,7 @@ const connection = mysql.createConnection({
 	password: conf.sqlPW,
 	database: conf.sqlDB
 });
-connection.connect(function (err) {
+connection.connect(function(err) {
 	if (err) {
 		console.error('error connecting: ' + err.stack);
 		return;
@@ -90,7 +90,7 @@ octo.repos
 		}
 	});
 */
-Date.daysBetween = function (date1, date2) {
+Date.daysBetween = function(date1, date2) {
 	//Get 1 day in milliseconds
 	var one_day = 1000 * 60 * 60 * 24;
 
@@ -103,11 +103,14 @@ Date.daysBetween = function (date1, date2) {
 
 // API stuff
 app.route('/api/github').get((req, res) => {
-	connection.query('SELECT * FROM github', function (err, results) {
+	connection.query('SELECT * FROM github', function(err, results) {
 		if (err) {
 			console.error(err);
 			res.status(500).send();
 			return;
+		}
+		for (let row in results) {
+			results[row].url = results[row].url.trim();
 		}
 		res.status(200).send(results);
 	});
