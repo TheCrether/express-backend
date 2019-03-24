@@ -72,7 +72,7 @@ octo.repos
 		conf.lastPushed = Date.now();
 		fs.writeFileSync('./conf.json', JSON.stringify(conf), 'utf8');
 		connection.query('DELETE FROM github', (err, res) => {
-			if (err) throw err;
+			if (err) console.error(err);
 			console.log('Deleting everything in Github table');
 		});
 		for (const repo of data.data) {
@@ -82,7 +82,7 @@ octo.repos
 				`'${repo.description == null ? '' : repo.description}', '
 				${repo.homepage == null ? '' : repo.homepage}');`;
 			connection.query(sql, function(err, res) {
-				if (err) throw err;
+				if (err) console.error(err);
 
 				console.log(`pushed ${repo.name} to db`);
 			});
