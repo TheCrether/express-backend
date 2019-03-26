@@ -5,3 +5,4 @@ sessions/**
 web.sql
 inserts.sql
 contact.json
+public/**
