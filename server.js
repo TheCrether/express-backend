@@ -46,7 +46,7 @@ const connection = mysql.createConnection({
 	password: conf.sqlPW,
 	database: conf.sqlDB
 });
-connection.connect(function(err) {
+let connect = connection.connect(function(err) {
 	if (err) {
 		console.error('error connecting: ' + err.stack);
 		return;
@@ -54,64 +54,36 @@ connection.connect(function(err) {
 
 	console.log(`connected as id ${connection.threadId} to ${connection.config.database}`);
 });
+let close = connection.destroy();
 
 // github
 const Octokit = require('@octokit/rest');
 const octo = new Octokit();
 
-octo.repos
-	.listForUser({
-		username: 'thecrether'
-	})
-	.then((data) => {
-		let oldDate = conf.lastPushed;
-		let now = Date.now();
-		if (Date.daysBetween(now, oldDate) < 1) {
-			return;
-		}
-		conf.lastPushed = Date.now();
-		fs.writeFileSync('./conf.json', JSON.stringify(conf), 'utf8');
-		connection.query('DELETE FROM github', (err, res) => {
-			if (err) console.error(err);
-			console.log('Deleting everything in Github table');
+let repos = [];
+function reposPush() {
+	octo.repos
+		.listForUser({
+			username: 'thecrether'
+		})
+		.then((data) => {
+			for (const repo of data.data) {
+				repos = [];
+				repos.push({
+					name: repo.name,
+					gitlink: repo.html_url,
+					description: repo.description == null ? '' : repo.description,
+					url: repo.homepage == null ? '' : repo.homepage
+				});
+			}
 		});
-		for (const repo of data.data) {
-			sql =
-				`INSERT INTO github (name, gitlink, description, url) VALUES (` +
-				`'${repo.name}', '${repo.html_url}', ` +
-				`'${repo.description == null ? '' : repo.description}', '
-				${repo.homepage == null ? '' : repo.homepage}');`;
-			connection.query(sql, function(err, res) {
-				if (err) console.error(err);
-
-				console.log(`pushed ${repo.name} to db`);
-			});
-		}
-	});
-Date.daysBetween = function(date1, date2) {
-	//Get 1 day in milliseconds
-	var one_day = 1000 * 60 * 60 * 24;
-
-	// Calculate the difference in milliseconds
-	var difference_ms = date1 - date2;
-
-	// Convert back to days and return
-	return difference_ms / one_day;
-};
+}
+reposPush();
+setInterval(reposPush, 43200);
 
 // API stuff
 app.route('/api/github').get((req, res) => {
-	connection.query('SELECT * FROM github', function(err, results) {
-		if (err) {
-			console.error(err);
-			res.status(500).send();
-			return;
-		}
-		for (let row in results) {
-			results[row].url = results[row].url.trim();
-		}
-		res.status(200).send(results);
-	});
+	res.status(200).send(repos);
 });
 
 app.get('/api/contact', (req, res) => {
@@ -156,12 +128,14 @@ app.route('/api/structograms').post((req, res) => {
 		res.status(400).send();
 		return;
 	}
+	connect();
 	connection.query(
 		`INSERT INTO structograms (name, content) VALUES('${body.name}', '${body.content}')`,
 		(err, result) => {
 			if (err) {
 				console.error(err);
 				res.status(500).send();
+				close();
 				return;
 			}
 			console.log(`pushed structogram at id ${result.insertId}`);
@@ -170,6 +144,7 @@ app.route('/api/structograms').post((req, res) => {
 			});
 		}
 	);
+	close();
 });
 
 app.route('/api/structograms/:id').get((req, res) => {
@@ -178,14 +153,17 @@ app.route('/api/structograms/:id').get((req, res) => {
 		if (err) {
 			console.error(err);
 			res.status(500).send();
+			close();
 			return;
 		}
 		if (result.length == 0) {
 			res.status(404).send();
+			close();
 			return;
 		}
 		res.status(200).send(result[0]);
 	});
+	close();
 });
 
 app.get('*', (req, res) => {
