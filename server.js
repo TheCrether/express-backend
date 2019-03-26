@@ -79,7 +79,7 @@ function reposPush() {
 		});
 }
 reposPush();
-setInterval(reposPush, 43200);
+setInterval(reposPush, 43200000);
 
 // API stuff
 app.route('/api/github').get((req, res) => {
