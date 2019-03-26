@@ -67,13 +67,13 @@ function reposPush() {
 			username: 'thecrether'
 		})
 		.then((data) => {
+			repos = [];
 			for (const repo of data.data) {
-				repos = [];
 				repos.push({
 					name: repo.name,
 					gitlink: repo.html_url,
-					description: repo.description == null ? '' : repo.description,
-					url: repo.homepage == null ? '' : repo.homepage
+					description: repo.description,
+					url: repo.homepage
 				});
 			}
 		});
