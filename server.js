@@ -18,6 +18,7 @@ app.use(
 
 // So that everything gets redirected to angular routes
 app.use('/', express.static(path.join(__dirname, 'public/')));
+app.use('/static', express.static(path.join(__dirname, 'static/')));
 /*
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
@@ -167,7 +168,9 @@ app.route('/api/structograms/:id').get((req, res) => {
 });
 
 app.get('*', (req, res) => {
-	res.sendFile(path.join(__dirname, 'public/index.html'));
+	res.sendFile(path.join(__dirname, 'public/index.html'), () => {
+		res.sendFile(path.join(__dirname, 'static/error.html'));
+	});
 });
 
 app.listen(conf.port, () => {
