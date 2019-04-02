@@ -5,4 +5,5 @@ sessions/**
 web.sql
 inserts.sql
 contact.json
-public/**
+build/
+app/public
