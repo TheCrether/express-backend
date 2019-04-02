@@ -1,6 +1,6 @@
 node_modules/
 .env
 conf.json
-sessions/
+sessions/**
 contact.json
-build/
+build/**
