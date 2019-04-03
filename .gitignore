@@ -1,7 +1,9 @@
-node_modules/
+node_modules/**
 .env
 conf.json
-sessions/
+sessions/**
+web.sql
+inserts.sql
 contact.json
 build/
 app/public
