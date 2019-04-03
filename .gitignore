@@ -6,6 +6,7 @@ web.sql
 inserts.sql
 contact.json
 <<<<<<< HEAD
+<<<<<<< HEAD
 build/
 <<<<<<< HEAD
 app/public
@@ -15,3 +16,6 @@ app/public
 =======
 public/**
 >>>>>>> parent of f1db461... Merge branch 'typescript'
+=======
+build/
+>>>>>>> parent of 4cc3883... error
