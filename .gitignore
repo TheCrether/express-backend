@@ -1,8 +1,11 @@
-node_modules/
+node_modules/**
 .env
 conf.json
 sessions/**
+web.sql
+inserts.sql
 contact.json
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -21,3 +24,6 @@ build/
 =======
 build/**
 >>>>>>> parent of 0c8ca22... Revert "first typescript commit"
+=======
+public/**
+>>>>>>> parent of b80a2c4... first typescript commit

@@ -1,54 +1,68 @@
-import express = require('express');
-import path = require('path');
-import fs = require('fs');
-import uuid = require('uuid');
-import compression = require('compression');
-import bodyParser = require('body-parser');
-import cors = require('cors');
-import mysql = require('mysql');
-import Octokit = require('@octokit/rest');
-// import conf = require('./conf.json');
-// import express = require('express');
-const conf = JSON.parse(fs.readFileSync(`./conf.json`, 'utf-8'));
+const express = require('express'),
+	path = require('path'),
+	app = express(),
+	fs = require('fs'),
+	uuid = require('uuid'),
+	conf = require('./conf.json'),
+	compression = require('compression');
 
-const app: express.Application = express();
-
+// all use things
+app.use(compression());
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(
 	bodyParser.urlencoded({
 		extended: false
 	})
 );
-app.use(compression());
 
+// So that everything gets redirected to angular routes
 app.use('/', express.static(path.join(__dirname, 'public/')));
 app.use('/static', express.static(path.join(__dirname, 'static/')));
-
+/*
+const session = require('express-session');
+const FileStore = require('session-file-store')(session);
+app.use(
+	session({
+		genid: (req) => {
+			console.log('Inside session middleware');
+			console.log(req.sessionID);
+			return uuid();
+		},
+		store: new FileStore(),
+		secret: 'IlikeAPItrolllol xd', // TODO change when production
+		resave: false,
+		saveUninitialized: true
+	})
+);
+*/
+const cors = require('cors');
 app.use(cors());
 
+// mysql
+const mysql = require('mysql');
 const connection = mysql.createConnection({
 	host: conf.sqlHost,
 	user: conf.sqlUser,
 	password: conf.sqlPW,
 	database: conf.sqlDB
 });
+let connect = connection.connect(function(err) {
+	if (err) {
+		console.error('error connecting: ' + err.stack);
+		return;
+	}
 
-function connect(): void {
-	connection.connect((err) => {
-		if (err) {
-			console.error(err);
-			return;
-		}
-		console.log(`connected with ${connection.threadId}`);
-	});
-}
-function destroy(): void {
-	connection.destroy();
-}
+	console.log(`connected as id ${connection.threadId} to ${connection.config.database}`);
+});
+let close = connection.destroy();
 
+// github
+const Octokit = require('@octokit/rest');
 const octo = new Octokit();
-let repos: object[] = [];
-function reposPush(): void {
+
+let repos = [];
+function reposPush() {
 	octo.repos
 		.listForUser({
 			username: 'thecrether'
@@ -62,15 +76,26 @@ function reposPush(): void {
 					description: repo.description,
 					url: repo.homepage
 				});
-				fs.writeFileSync(`${__dirname}/repos.json`, JSON.stringify(repos), 'utf-8');
 			}
 		});
 }
 reposPush();
 setInterval(reposPush, 43200000);
+
 // API stuff
 app.route('/api/github').get((req, res) => {
-	res.status(200).send(JSON.stringify(repos));
+	res.status(200).send(repos);
+});
+
+app.get('/api/contact', (req, res) => {
+	try {
+		const contact = JSON.parse(fs.readFileSync(`${__dirname}/contact.json`));
+	} catch (error) {
+		console.error(error);
+		res.status(500).send();
+		return;
+	}
+	res.status(200).send(contact);
 });
 
 app.route('/api/contact').post((req, res, next) => {
@@ -78,7 +103,7 @@ app.route('/api/contact').post((req, res, next) => {
 	if (body.name == undefined || body.email == undefined || body.message == undefined) {
 		res.status(400).send();
 	}
-	let contact: any = fs.readFileSync(`${__dirname}/contact.json`, 'utf-8');
+	let contact = fs.readFileSync(`${__dirname}/contact.json`);
 	contact = JSON.parse(contact);
 	contact.push(body);
 	fs.writeFileSync(`${__dirname}/contact.json`, JSON.stringify(contact), 'utf8');
@@ -89,8 +114,11 @@ app.route('/api/contact').post((req, res, next) => {
 // TODO when auth ready
 /* 
 app.route('/api/users/:username').get((req, res) => {});
+
 app.route("/api/users/:username").post((req, res) => {});
+
 app.route('/api/users/:username').put((req, res) => {});
+
 app.route('/api/users/:username').delete((req, res) => {});
 */
 
@@ -146,9 +174,10 @@ app.get('*', (req, res) => {
 });
 
 app.listen(conf.port, () => {
-	console.log('Custom Port listening: ' + conf.port);
+	// tslint:disable-next-line:no-console
+	console.log(`Listening on Port ${conf.port}`);
 });
 
 app.listen(443, () => {
-	console.log('HTTPS listening');
+	console.log(`Listening lul`);
 });
