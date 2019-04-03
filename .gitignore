@@ -6,4 +6,8 @@ web.sql
 inserts.sql
 contact.json
 build/
+<<<<<<< HEAD
 app/public
+=======
+app/public
+>>>>>>> parent of 52e7b13... Update .gitignore
