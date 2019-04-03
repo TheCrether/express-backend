@@ -5,3 +5,4 @@ sessions/
 contact.json
 build/
 app/public
+web.sql
