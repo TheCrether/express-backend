@@ -21,8 +21,8 @@ app.use(
 );
 app.use(compression());
 
-app.use('/', express.static(path.join('../public/')));
-app.use('/static', express.static(path.join('../static/')));
+app.use('/', express.static(path.join('public/')));
+app.use('/static', express.static(path.join('static/')));
 
 app.use(cors());
 
