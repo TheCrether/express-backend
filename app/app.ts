@@ -140,7 +140,7 @@ app.route('/api/structograms/:id').get((req, res) => {
 });
 
 app.get('*', (req, res) => {
-	res.sendFile('index.html');
+	res.sendFile('public/index.html');
 });
 
 app.listen(conf.port, () => {
