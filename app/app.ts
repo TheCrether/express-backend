@@ -62,7 +62,7 @@ function reposPush(): void {
 					description: repo.description,
 					url: repo.homepage
 				});
-				fs.writeFileSync(`${__dirname}/repos.json`, JSON.stringify(repos), 'utf-8');
+				fs.writeFileSync(`./repos.json`, JSON.stringify(repos), 'utf-8');
 			}
 		});
 }
@@ -78,10 +78,10 @@ app.route('/api/contact').post((req, res, next) => {
 	if (body.name == undefined || body.email == undefined || body.message == undefined) {
 		res.status(400).send();
 	}
-	let contact: any = fs.readFileSync(`${__dirname}/contact.json`, 'utf-8');
+	let contact: any = fs.readFileSync(`./contact.json`, 'utf-8');
 	contact = JSON.parse(contact);
 	contact.push(body);
-	fs.writeFileSync(`${__dirname}/contact.json`, JSON.stringify(contact), 'utf8');
+	fs.writeFileSync(`./contact.json`, JSON.stringify(contact), 'utf8');
 	res.status(204).send();
 });
 //delete lol.xd2;
@@ -140,8 +140,8 @@ app.route('/api/structograms/:id').get((req, res) => {
 });
 
 app.get('*', (req, res) => {
-	res.sendFile(path.join(__dirname, 'public/index.html'), () => {
-		res.sendFile(path.join(__dirname, 'static/error.html'));
+	res.sendFile(path.join('/public/index.html'), () => {
+		res.sendFile(path.join('/static/error.html'));
 	});
 });
 
