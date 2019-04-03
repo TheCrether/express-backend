@@ -114,8 +114,11 @@ app.route('/api/contact').post((req, res, next) => {
 // TODO when auth ready
 /* 
 app.route('/api/users/:username').get((req, res) => {});
+
 app.route("/api/users/:username").post((req, res) => {});
+
 app.route('/api/users/:username').put((req, res) => {});
+
 app.route('/api/users/:username').delete((req, res) => {});
 */
 

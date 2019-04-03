@@ -1,8 +1,16 @@
-node_modules/
+node_modules/**
 .env
 conf.json
+<<<<<<< HEAD
 sessions/
 contact.json
 build/
 app/public
 web.sql
+=======
+sessions/**
+web.sql
+inserts.sql
+contact.json
+public/**
+>>>>>>> parent of b80a2c4... first typescript commit
