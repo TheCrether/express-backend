@@ -2,6 +2,7 @@ node_modules/**
 .env
 conf.json
 <<<<<<< HEAD
+<<<<<<< HEAD
 sessions/
 contact.json
 build/
@@ -14,3 +15,8 @@ inserts.sql
 contact.json
 public/**
 >>>>>>> parent of b80a2c4... first typescript commit
+=======
+sessions/**
+contact.json
+build/**
+>>>>>>> parent of 0e788be... Update .gitignore
