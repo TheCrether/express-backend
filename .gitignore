@@ -1,29 +1,5 @@
-node_modules/**
+node_modules/
 .env
 conf.json
-sessions/**
-web.sql
-inserts.sql
 contact.json
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-build/
-<<<<<<< HEAD
-app/public
-=======
-app/public
->>>>>>> parent of 52e7b13... Update .gitignore
-=======
-public/**
->>>>>>> parent of f1db461... Merge branch 'typescript'
-=======
-build/
->>>>>>> parent of 4cc3883... error
-=======
-build/**
->>>>>>> parent of 0c8ca22... Revert "first typescript commit"
-=======
-public/**
->>>>>>> parent of b80a2c4... first typescript commit
+public/
