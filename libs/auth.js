@@ -1,15 +1,11 @@
-import jwt from 'jsonwebtoken';
-import {
-	readFileSync
-} from "fs";
-import {
-	join
-} from "path";
+const jwt = require("jsonwebtoken")
+const fs = require("fs");
+const path = require("path");
 
-const privateKey = readFileSync(join(process.cwd(), "private.key"));
-const publicKey = readFileSync(join(process.cwd(), "public.key"));
+const privateKey = fs.readFileSync(path.join(process.cwd(), "private.key"));
+const publicKey = fs.readFileSync(path.join(process.cwd(), "public.key"));
 
-export function verifyJWTToken(token) {
+function verifyJWTToken(token) {
 	return new Promise((resolve, reject) => {
 		jwt.verify(token, privateKey, (err, decodedToken) => {
 			if (err || !decodedToken) {
@@ -21,7 +17,7 @@ export function verifyJWTToken(token) {
 	});
 }
 
-export function createJWToken(details) {
+function createJWToken(details) {
 	if (typeof details !== 'object') {
 		details = {};
 	}
@@ -42,3 +38,8 @@ export function createJWToken(details) {
 
 	return token;
 }
+
+module.exports = {
+	verifyJWTToken,
+	createJWToken
+};

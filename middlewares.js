@@ -1,11 +1,9 @@
-import {
-	verifyJWTToken
-} from "./libs/auth";
+const auth = require("./libs/auth");
 
-export function verifyJWT_MW(req, res, next) {
+function verifyJWT_MW(req, res, next) {
 	let token = (req.method === 'POST') ? req.body.token : req.query.token;
 
-	verifyJWTToken(token)
+	auth.verifyJWTToken(token)
 		.then((decodedToken) => {
 			req.user = decodedToken.data;
 			next();
@@ -17,3 +15,14 @@ export function verifyJWT_MW(req, res, next) {
 				});
 		});
 }
+
+function logging(req, res, next) {
+	const now = new Date();
+	console.log(`[${now.toDateString()} ${now.toLocaleTimeString()}]: ${req.method} ${req.url}`);
+	next();
+}
+
+module.exports = {
+	verifyJWT_MW,
+	logging
+};
