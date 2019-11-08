@@ -7,7 +7,7 @@ const express = require('express'),
 	api = require('./routes/api'),
 	login = require('./routes/login');
 
-const middlewares = require('./middlewares');
+// const middlewares = require('./middlewares');
 
 // all use things
 app.use(compression());
@@ -23,7 +23,7 @@ app.use(
 app.use('/', express.static(path.join(__dirname, 'public/')));
 app.use('/static', express.static(path.join(__dirname, 'static/')));
 app.use('/api', api, login);
-app.use(middlewares.logging);
+// app.use(middlewares.logging);
 
 const cors = require('cors');
 app.use(cors());
