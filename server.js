@@ -6,8 +6,32 @@ const express = require('express'),
 	compression = require('compression'),
 	api = require('./routes/api'),
 	login = require('./routes/login');
+const http = require('http');
+const https = require('https');
+
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/thecrether.at/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/thecrether.at/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/thecrether.at/chain.pem', 'utf8');
+
+const credentials = {
+		key: privateKey,
+		cert: certificate,
+		ca: ca
+};
 
 // const middlewares = require('./middlewares');
+
+app.use('/', function(req, res, next){
+	console.log("nibba")
+	if (!req.secure) {
+		console.log("not secure")
+		res.redirect('https://' + req.headers.host + req.url);
+	}
+	else next()
+
+	    // Or, if you don't want to automatically detect the domain name from the request header, you can hard code it:
+	//     // res.redirect('https://example.com' + req.url);
+})
 
 // all use things
 app.use(compression());
@@ -52,18 +76,21 @@ function reposPush() {
 }
 reposPush();
 setInterval(reposPush, 43200000);
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
 
-app.get('*', (req, res) => {
-	res.sendFile(path.join(__dirname, 'public/index.html'), () => {
-		res.sendFile(path.join(__dirname, 'static/error.html'));
-	});
+httpServer.listen(80, () => {
+		console.log('HTTP Server running on port 80');
+})
+httpsServer.listen(443, () => {
+		console.log('HTTPS Server running on port 443');
 });
 
-app.listen(conf.port, () => {
-	// tslint:disable-next-line:no-console
-	console.log(`Listening on Port ${conf.port}`);
-});
+//app.listen(conf.port, () => {
+//	// tslint:disable-next-line:no-console
+//	console.log(`Listening on Port ${conf.port}`);
+//});
 
-app.listen(443, () => {
-	console.log(`Listening on Port 443 (HTTPS)`);
-});
+//app.listen(443, () => {
+//	console.log(`Listening on Port 443 (HTTPS)`);
+//});
