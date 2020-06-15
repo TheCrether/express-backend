@@ -22,7 +22,6 @@ const credentials = {
 // const middlewares = require('./middlewares');
 
 app.use('/', function(req, res, next){
-	console.log("nibba")
 	if (!req.secure) {
 		console.log("not secure")
 		res.redirect('https://' + req.headers.host + req.url);
