@@ -102,4 +102,4 @@ I wanted something to communicate with my web projects like displaying the githu
 }
 ```
 
-[1]: http://thecrether.net/projects
+[1]: http://thecrether.at/projects
