@@ -16,11 +16,6 @@
 
 I wanted something to communicate with my web projects like displaying the github repositories on my [Projects site][1].
 
-## Todolist
-
-- [ ] Finish README
-- [ ] Make all routes function
-
 ## Usage of the API
 
 **Info:** If there is an server error the server will return `500 Internal Server Error` or `503 Service Unavailable` if the route is not implemented but will be
